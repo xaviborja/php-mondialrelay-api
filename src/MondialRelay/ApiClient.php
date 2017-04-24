@@ -32,7 +32,6 @@ class ApiClient
                     trim($destination_point->LgAdr1),
                     str_replace(",",".",$destination_point->Latitude),
                     str_replace(",",".",$destination_point->Longitude),
-                    $label_position,
                     $destination_point->CP
                 );
                 $label_position++;

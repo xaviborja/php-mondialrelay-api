@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2b520d616c69e10acfb8dc2818391c19",
-    "content-hash": "c37e1e875b94d40a9c2ce3a8acbbfdae",
+    "hash": "8c06eaf6adaabe01bf46a48dc8762f8d",
+    "content-hash": "8f1695d3c1fcb4d11101af5575b9d8af",
     "packages": [],
     "packages-dev": [
         {
@@ -1324,7 +1324,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "xaviborja/php-mondialrelay-api": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

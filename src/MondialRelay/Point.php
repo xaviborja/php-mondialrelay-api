@@ -9,15 +9,13 @@ class Point
     private $name;
     private $latitude;
     private $longitude;
-    private $label;
     private $cp;
 
-    public function __construct($name, $latitude, $longitude, $label, $cp)
+    public function __construct($name, $latitude, $longitude, $cp)
     {
         $this->name = $name;
         $this->latitude = $latitude;
         $this->longitude = $longitude;
-        $this->label = $label;
         $this->cp = $cp;
     }
 
@@ -34,11 +32,6 @@ class Point
     public function longitude()
     {
         return $this->longitude;
-    }
-
-    public function label()
-    {
-        return $this->label;
     }
 
     public function cp()
