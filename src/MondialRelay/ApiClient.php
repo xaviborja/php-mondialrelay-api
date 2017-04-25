@@ -29,6 +29,7 @@ class ApiClient
             $label_position = 1;
             foreach($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details as $destination_point){
                 $delivery_points[] = new Point(
+                    $destination_point->Num,
                     trim($destination_point->LgAdr1),
                     str_replace(",",".",$destination_point->Latitude),
                     str_replace(",",".",$destination_point->Longitude),
