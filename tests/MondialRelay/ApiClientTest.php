@@ -67,4 +67,13 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             $this->assertInstanceOf(Point::class, $point);
         }
     }
+
+    /**
+     * @test
+     */
+    public function itShouldReturnAValidPoint()
+    {
+        $point = $this->client->findDeliveryPoint('077712','ES');
+        $this->assertInstanceOf(Point::class, $point);
+    }
 }
