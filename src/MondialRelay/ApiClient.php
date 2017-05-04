@@ -9,6 +9,16 @@ class ApiClient
     private $websiteKey;
     private $client;
 
+    private static $property_days_name = [
+        'monday' => 'Horaires_Lundi',
+        'tuesday' => 'Horaires_Mardi',
+        'wednesday' => 'Horaires_Mercredi',
+        'thursday' => 'Horaires_Jeudi',
+        'friday' => 'Horaires_Vendredi',
+        'saturday' => 'Horaires_Samedi',
+        'sunday' =>'Horaires_Dimanche'
+    ];
+
     public function __construct(\SoapClient $soapClient, $websiteId, $websiteKey)
     {
         $this->websiteId = $websiteId;
@@ -80,13 +90,43 @@ class ApiClient
     }
 
     private function createPoint($response) {
+        $bussines_hours = $this->createBussinesHoursFromResponse($response);
         return new Point(
             $response->Num,
-            trim($response->LgAdr1),
             str_replace(",",".",$response->Latitude),
             str_replace(",",".",$response->Longitude),
-            $response->CP
+            $response->CP,
+            [
+                trim($response->LgAdr1),
+                trim($response->LgAdr2),
+                trim($response->LgAdr3),
+                trim($response->LgAdr4)
+            ],
+            $response->Ville,
+            $response->Pays,
+            [
+                $response->Localisation1,
+                $response->Localisation2
+            ],
+            $response->TypeActivite,
+            $response->Information,
+            $bussines_hours
         );
+    }
+
+    private function createBussinesHoursFromResponse($response)
+    {
+        $bussines_hours = [];
+        foreach(self::$property_days_name as  $day => $property){
+            $bussines_hours[] = new BussinessHours(
+                $day,
+                $response->$property->string[0],
+                $response->$property->string[1],
+                $response->$property->string[2],
+                $response->$property->string[3]
+            );
+        }
+        return $bussines_hours;
     }
 
 }
