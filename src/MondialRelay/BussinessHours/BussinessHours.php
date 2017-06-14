@@ -1,7 +1,7 @@
 <?php
 
 
-namespace MondialRelay;
+namespace MondialRelay\BussinessHours;
 
 
 class BussinessHours
