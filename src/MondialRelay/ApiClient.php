@@ -2,22 +2,16 @@
 
 namespace MondialRelay;
 
+use MondialRelay\Expedition\ExpeditionFactory;
+use MondialRelay\Point\PointFactory;
+use MondialRelay\Ticket\TicketFactory;
+
 class ApiClient
 {
 
     private $websiteId;
     private $websiteKey;
     private $client;
-
-    private static $property_days_name = [
-        'monday' => 'Horaires_Lundi',
-        'tuesday' => 'Horaires_Mardi',
-        'wednesday' => 'Horaires_Mercredi',
-        'thursday' => 'Horaires_Jeudi',
-        'friday' => 'Horaires_Vendredi',
-        'saturday' => 'Horaires_Samedi',
-        'sunday' =>'Horaires_Dimanche'
-    ];
 
     public function __construct(\SoapClient $soapClient, $websiteId, $websiteKey)
     {
@@ -28,24 +22,25 @@ class ApiClient
 
     public function findDeliveryPoints(array $request)
     {
-        try{
+        try {
             $request = $this->decorateRequest($request);
             $result = $this->client->WSI3_PointRelais_Recherche($request);
-            $this->checkResponse('WSI3_PointRelais_Recherche',$result);
+            $pointFactory = new PointFactory();
+            $this->checkResponse('WSI3_PointRelais_Recherche', $result);
             $delivery_points = [];
-            if (!property_exists($result->WSI3_PointRelais_RechercheResult->PointsRelais, 'PointRelais_Details')){
+            if (!property_exists($result->WSI3_PointRelais_RechercheResult->PointsRelais, 'PointRelais_Details')) {
                 return $delivery_points;
             }
             $label_position = 1;
-            if (is_object($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details)){
-                return $this->createPoint($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details);
+            if (is_object($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details)) {
+                return $pointFactory->create($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details);
             }
-            foreach($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details as $destination_point){
-                $delivery_points[] = $this->createPoint($destination_point);
+            foreach ($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details as $destination_point) {
+                $delivery_points[] = $pointFactory->create($destination_point);
                 $label_position++;
             }
             return $delivery_points;
-        } catch ( \SoapFault $e ) {
+        } catch (\SoapFault $e) {
             throw new \Exception();
         }
 
@@ -59,7 +54,7 @@ class ApiClient
                 'Pays' => $country
             ));
 
-        } catch ( \SoapFault $e ) {
+        } catch (\SoapFault $e) {
             throw new \Exception();
         }
     }
@@ -67,7 +62,7 @@ class ApiClient
     private function decorateRequest($request)
     {
         $key = $this->websiteId;
-        foreach($request as $parameter => $value){
+        foreach ($request as $parameter => $value) {
             $key .= $value;
         }
         $key .= $this->websiteKey;
@@ -89,44 +84,46 @@ class ApiClient
         }
     }
 
-    private function createPoint($response) {
-        $bussines_hours = $this->createBussinesHoursFromResponse($response);
-        return new Point(
-            $response->Num,
-            str_replace(",",".",$response->Latitude),
-            str_replace(",",".",$response->Longitude),
-            $response->CP,
-            [
-                trim($response->LgAdr1),
-                trim($response->LgAdr2),
-                trim($response->LgAdr3),
-                trim($response->LgAdr4)
-            ],
-            $response->Ville,
-            $response->Pays,
-            [
-                $response->Localisation1,
-                $response->Localisation2
-            ],
-            $response->TypeActivite,
-            $response->Information,
-            $bussines_hours
-        );
+    public function createExpedition(array $request)
+    {
+        try {
+
+            $request = $this->decorateRequest($request);
+            $result = $this->client->WSI2_CreationExpedition($request);
+            $this->checkResponse('WSI2_CreationExpedition', $result);
+
+            return (new ExpeditionFactory())->create($result->WSI2_CreationExpeditionResult->STAT,
+                $result->WSI2_CreationExpeditionResult->ExpeditionNum,
+                $result->WSI2_CreationExpeditionResult->TRI_AgenceCode,
+                $result->WSI2_CreationExpeditionResult->TRI_Groupe,
+                $result->WSI2_CreationExpeditionResult->TRI_Navette,
+                $result->WSI2_CreationExpeditionResult->TRI_Agence,
+                $result->WSI2_CreationExpeditionResult->TRI_TourneeCode,
+                $result->WSI2_CreationExpeditionResult->TRI_LivraisonMode,
+                $result->WSI2_CreationExpeditionResult->CodesBarres->string);
+
+        } catch (\SoapFault $e) {
+            throw new \Exception();
+        }
     }
 
-    private function createBussinesHoursFromResponse($response)
+    public function generateTickets(array $request)
     {
-        $bussines_hours = [];
-        foreach(self::$property_days_name as  $day => $property){
-            $bussines_hours[] = new BussinessHours(
-                $day,
-                $response->$property->string[0],
-                $response->$property->string[1],
-                $response->$property->string[2],
-                $response->$property->string[3]
-            );
+
+        try {
+
+            $request = $this->decorateRequest($request);
+            $result = $this->client->WSI3_GetEtiquettes($request);
+            $this->checkResponse('WSI3_GetEtiquettes', $result);
+
+            return (new TicketFactory())->create($result->WSI3_GetEtiquettesResult->STAT,
+                $result->WSI3_GetEtiquettesResult->URL_PDF_A4,
+                $result->WSI3_GetEtiquettesResult->URL_PDF_A5,
+                $result->WSI3_GetEtiquettesResult->URL_PDF_10x15);
+
+        } catch (\SoapFault $e) {
+            throw new \Exception();
         }
-        return $bussines_hours;
     }
 
 }
