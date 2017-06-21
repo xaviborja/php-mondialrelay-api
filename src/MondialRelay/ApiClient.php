@@ -32,7 +32,8 @@ class ApiClient
                 return $delivery_points;
             }
             if (is_object($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details)) {
-                return $delivery_points[] = $pointFactory->create($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details);
+                $delivery_points[] = $pointFactory->create($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details);
+                return $delivery_points;
             }
             foreach ($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details as $destination_point) {
                 $delivery_points[] = $pointFactory->create($destination_point);
