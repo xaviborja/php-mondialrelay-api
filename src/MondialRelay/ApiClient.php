@@ -31,13 +31,11 @@ class ApiClient
             if (!property_exists($result->WSI3_PointRelais_RechercheResult->PointsRelais, 'PointRelais_Details')) {
                 return $delivery_points;
             }
-            $label_position = 1;
             if (is_object($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details)) {
-                return $pointFactory->create($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details);
+                return $delivery_points[] = $pointFactory->create($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details);
             }
             foreach ($result->WSI3_PointRelais_RechercheResult->PointsRelais->PointRelais_Details as $destination_point) {
                 $delivery_points[] = $pointFactory->create($destination_point);
-                $label_position++;
             }
             return $delivery_points;
         } catch (\SoapFault $e) {
