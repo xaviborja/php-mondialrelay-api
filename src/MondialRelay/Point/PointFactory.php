@@ -4,12 +4,6 @@ namespace MondialRelay\Point;
 
 use MondialRelay\BussinessHours\BussinessHoursFactory;
 
-/**
- * Created by PhpStorm.
- * User: albertclaret
- * Date: 14/06/17
- * Time: 09:27
- */
 class PointFactory
 {
     public function create($response)
@@ -21,16 +15,16 @@ class PointFactory
             str_replace(",", ".", $response->Longitude),
             $response->CP,
             [
-                trim($response->LgAdr1),
-                trim($response->LgAdr2),
-                trim($response->LgAdr3),
-                trim($response->LgAdr4)
+                isset($response->LgAdr1) ? trim($response->LgAdr1) : '',
+                isset($response->LgAdr2) ? trim($response->LgAdr2) : '',
+                isset($response->LgAdr3) ? trim($response->LgAdr3) : '',
+                isset($response->LgAdr4) ? trim($response->LgAdr4) : '',
             ],
             $response->Ville,
             $response->Pays,
             [
-                $response->Localisation1,
-                $response->Localisation2
+                isset($response->Localisation1) ? $response->Localisation1 : '',
+                isset($response->Localisation2) ? $response->Localisation2 : ''
             ],
             $response->TypeActivite,
             $response->Information,
