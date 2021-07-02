@@ -40,7 +40,7 @@ class ApiClient
             }
             return $delivery_points;
         } catch (\SoapFault $e) {
-            throw new \Exception();
+            throw new \Exception($e->GetMessage());
         }
 
     }
