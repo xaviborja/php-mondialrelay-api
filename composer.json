@@ -19,8 +19,5 @@
   },
   "config": {
     "bin-dir": "bin"
-  },
-  "require": {
-    "xaviborja/php-mondialrelay-api": "dev-master"
   }
 }
