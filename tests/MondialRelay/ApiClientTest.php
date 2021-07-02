@@ -56,10 +56,10 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldReturnAnArrayOfPointsIfParametersMatch()
     {
-        $points = $this->client->findDeliveryPoints(array(
+        /*$points = $this->client->findDeliveryPoints(array(
             'Pays' => "ES",
             'Ville' => "",
-            'CP' => '08915',
+            'CP' => "08915",
             'Latitude' => "",
             'Longitude' => "",
             'Taille' => "",
@@ -67,7 +67,22 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             'Action' => "",
             'DelaiEnvoi' => "0",
             'RayonRecherche' => "20"
-        ));
+        ));*/
+        $country = 'ES';
+        $cp = '08915';
+        $points = $this->client->findDeliveryPoints(array(
+                                                  'Pays' => $country,
+                                                  'NumPointRelais' => "077712",
+                                                  'Ville' => "",
+                                                  'CP' => $cp,
+                                                  'Latitude' => "",
+                                                  'Longitude' => "",
+                                                  'Taille' => "",
+                                                  'Poids' => "",
+                                                  'Action' => "",
+                                                  'DelaiEnvoi' => "0",
+                                                  'RayonRecherche' => "20"
+                                              ));
         foreach ($points as $point) {
             $this->assertInstanceOf(Point::class, $point);
         }
@@ -124,7 +139,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             'COL_Rel_Pays' => 'ES',
             'COL_Rel' => '0000',
             'LIV_Rel_Pays' => 'ES',
-            'LIV_Rel' => '053589',
+            'LIV_Rel' => '44431',
             'TAvisage' => 'N',
             'TReprise' => 'N',
             'Montage' => '0',
