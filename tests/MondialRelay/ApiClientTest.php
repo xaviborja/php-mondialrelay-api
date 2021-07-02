@@ -56,25 +56,11 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldReturnAnArrayOfPointsIfParametersMatch()
     {
-        /*$points = $this->client->findDeliveryPoints(array(
-            'Pays' => "ES",
-            'Ville' => "",
-            'CP' => "08915",
-            'Latitude' => "",
-            'Longitude' => "",
-            'Taille' => "",
-            'Poids' => "",
-            'Action' => "",
-            'DelaiEnvoi' => "0",
-            'RayonRecherche' => "20"
-        ));*/
-        $country = 'ES';
-        $cp = '08915';
         $points = $this->client->findDeliveryPoints(array(
-                                                  'Pays' => $country,
+                                                  'Pays' => "ES",
                                                   'NumPointRelais' => "077712",
                                                   'Ville' => "",
-                                                  'CP' => $cp,
+                                                  'CP' => "08915",
                                                   'Latitude' => "",
                                                   'Longitude' => "",
                                                   'Taille' => "",
@@ -93,8 +79,8 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldReturnAValidPoint()
     {
-        $point = $this->client->findDeliveryPoint('077712', 'ES');
-        $this->assertInstanceOf(Point::class, $point);
+        $point = $this->client->findDeliveryPoint('44431', 'ES');
+        $this->assertInstanceOf(Point::class, end($point));
     }
 
     /**
